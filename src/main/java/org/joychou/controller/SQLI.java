@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.*;
 import java.util.List;
+import org.checkerframework.checker.tainting.qual.Untainted;
 
 
 /**
@@ -61,7 +62,7 @@ public class SQLI {
 
             // sqli vuln code
             Statement statement = con.createStatement();
-            String sql = "select * from users where username = '" + username + "'";
+            @Untainted String sql = "select * from users where username = '" + username + "'";
             logger.info(sql);
             ResultSet rs = statement.executeQuery(sql);
 

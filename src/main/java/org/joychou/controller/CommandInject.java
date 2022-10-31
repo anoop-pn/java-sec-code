@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import org.checkerframework.checker.tainting.qual.Untainted;
 
 @RestController
 public class CommandInject {
@@ -24,7 +25,7 @@ public class CommandInject {
     @GetMapping("/codeinject")
     public String codeInject(String filepath) throws IOException {
 
-        String[] cmdList = new String[]{"sh", "-c", "ls -la " + filepath};
+        @Untainted String[] cmdList = new String[]{"sh", "-c", "ls -la " + filepath};
         ProcessBuilder builder = new ProcessBuilder(cmdList);
         builder.redirectErrorStream(true);
         Process process = builder.start();
@@ -39,9 +40,9 @@ public class CommandInject {
     @GetMapping("/codeinject/host")
     public String codeInjectHost(HttpServletRequest request) throws IOException {
 
-        String host = request.getHeader("host");
+        @Untainted String host = request.getHeader("host");
         logger.info(host);
-        String[] cmdList = new String[]{"sh", "-c", "curl " + host};
+        @Untainted String[] cmdList = new String[]{"sh", "-c", "curl " + host};
         ProcessBuilder builder = new ProcessBuilder(cmdList);
         builder.redirectErrorStream(true);
         Process process = builder.start();
@@ -50,11 +51,11 @@ public class CommandInject {
 
     @GetMapping("/codeinject/sec")
     public String codeInjectSec(String filepath) throws IOException {
-        String filterFilePath = SecurityUtil.cmdFilter(filepath);
+        @Untainted String filterFilePath = SecurityUtil.cmdFilter(filepath);
         if (null == filterFilePath) {
             return "Bad boy. I got u.";
         }
-        String[] cmdList = new String[]{"sh", "-c", "ls -la " + filterFilePath};
+        @Untainted String[] cmdList = new String[]{"sh", "-c", "ls -la " + filterFilePath};
         ProcessBuilder builder = new ProcessBuilder(cmdList);
         builder.redirectErrorStream(true);
         Process process = builder.start();
